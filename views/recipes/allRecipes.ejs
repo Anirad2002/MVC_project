@@ -1,0 +1,28 @@
+<!-- views/recipes/allRecipes.ejs -->
+
+<%- include('../layouts/mainLayout', { title: 'Усі Рецепти', content: '' }) %>
+
+<h1>Усі Рецепти</h1>
+
+<div class="recipe-list">
+    <% recipes.forEach(function(recipe) { %>
+        <div class="recipe">
+            <h2><%= recipe.name %></h2>
+            <p><strong>Інгредієнти:</strong> <%= recipe.ingredients %></p>
+            <p><strong>Інструкція:</strong> <%= recipe.instructions %></p>
+            <!-- Тут можна вивести інші деталі рецепту, такі як коментарі, рейтинг тощо -->
+            <!-- Тут можна вивести інші деталі рецепту, такі як коментарі, рейтинг тощо -->
+            <div class="additional-details">
+                <h3>Коментарі:</h3>
+                <% recipe.comments.forEach(function(comment) { %>
+                    <div class="comment">
+                        <p><strong><%= comment.author %>:</strong> <%= comment.text %></p>
+                    </div>
+                <% }); %>
+
+                <h3>Рейтинг:</h3>
+                <p>Рейтинг: <%= recipe.rating %></p>
+            </div>
+        </div>
+    <% }); %>
+</div>
