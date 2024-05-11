@@ -1,73 +1,70 @@
-
 // controllers/authController.js
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 
 const authController = {
-  // Get the registration form
+  // Отримати форму реєстрації
   getRegisterForm: (req, res) => {
     res.render('auth/register');
   },
 
-  // Register a new user
+  // Реєстрація нового користувача
   registerUser: async (req, res) => {
     try {
       const { email, name, password } = req.body;
-      // Check if a user with the same email exists
+      // Перевірка, чи користувач з такою ж електронною адресою існує вже
       let existingUser = await User.findOne({ email });
       if (existingUser) {
-        return res.status(400).send('User with this email already exists');
+        return res.status(400).send('Користувач з цією електронною адресою вже існує');
       }
-      // Create a new user
+      // Створення нового користувача
       const newUser = new User({ email, name, password });
       await newUser.save();
       res.redirect('login');
     } catch (err) {
       console.error(err);
-      res.status(500).send('Server Error');
+      res.status(500).send('Помилка сервера');
     }
   },
 
-  // Get the login form
+  // Отримати форму авторизації
   getLoginForm: (req, res) => {
     res.render('auth/login');
   },
 
-  // Authenticate a user
+  // Аутентифікація користувача
   loginUser: async (req, res) => {
     try {
       const { email, password } = req.body;
-      // Check if a user with the provided email exists
+      // Перевірка, чи користувач з вказаною електронною адресою існує
       let user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).send('User with this email does not exist');
+        return res.status(400).send('Користувача з цією електронною адресою не існує');
       }
-      // Check the password
+      // Перевірка пароля
       const isPasswordValid = password === user.password;
       if (!isPasswordValid) {
-        return res.status(401).send('Invalid password');
+        return res.status(401).send('Неправильний пароль');
       }
-      // Successful authentication - save user information in the session
-      if (req.session) {
-        req.session.user = {
-          _id: user._id,
-          email: user.email,
-          name: user.name
-        };
-      }
-      res.redirect('/');
+      // Успішна аутентифікація - зберегти інформацію про користувача в сесії
+      req.session.isAuthenticated = true;
+      req.session.user = {
+        _id: user._id,
+        email: user.email,
+        name: user.name
+      };
+      res.redirect('../users/profile');
     } catch (err) {
       console.error(err);
-      res.status(500).send('Server Error');
+      res.status(500).send('Помилка сервера');
     }
   },
-
-  // Logout the user
+  
+  // Вийти з системи
   logoutUser: (req, res) => {
+    req.session.isAuthenticated = false; // Встановлення isAuthenticated у false при виході
     req.session.destroy();
     res.redirect('/');
   }
 };
 
 module.exports = authController;
-
