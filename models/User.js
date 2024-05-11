@@ -2,6 +2,7 @@
 // models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const config = require('../config');
 
 // Схема користувача
 const userSchema = new mongoose.Schema({
@@ -22,7 +23,11 @@ const userSchema = new mongoose.Schema({
 
 // Метод для порівняння паролів
 userSchema.methods.comparePassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
+    try {
+        return await bcrypt.compare(enteredPassword, this.password);
+    } catch (error) {
+        throw new Error(error);
+    }
 };
 
 const User = mongoose.model('User', userSchema);
