@@ -1,9 +1,9 @@
+
 <!-- views/users/profile.ejs -->
 
 <%- include('../layouts/mainLayout', { title: 'Профіль', content: '' }) %>
 
 <h1>Профіль користувача</h1>
-
 <h2>Ім'я: <%= user.name %></h2>
 <h2>Електронна пошта: <%= user.email %></h2>
 
@@ -23,20 +23,5 @@
     </form>
 </div>
 
-<!-- Розділ "Мої рецепти" -->
-<div class="my-recipes">
-    <h2>Мої рецепти</h2>
-    <% if (user.recipes.length > 0) { %>
-        <ul>
-            <% user.recipes.forEach(function(recipe) { %>
-                <li><a href="/recipes/<%= recipe._id %>"><%= recipe.name %></a></li>
-            <% }); %>
-        </ul>
-    <% } else { %>
-        <p>У вас ще немає рецептів.</p>
-    <% } %>
-</div>
 
 <!-- Додайте інші деталі профілю, якщо потрібно -->
-
-<a href="/users/logout">Вийти</a>
