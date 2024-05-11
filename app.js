@@ -1,51 +1,4 @@
-/*// app.js
-// Головний файл додатку, який ініціалізує та запускає сервер, налаштовує middleware та маршрути
-
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const mongoose = require('mongoose');
-const config = require('./config');
-const recipeRoutes = require('./routes/recipeRoutes');
-const userRoutes = require('./routes/userRoutes');
-const authRoutes = require('./routes/authRoutes');
-
-// Створення екземпляру додатку Express
-const app = express();
-
-// Підключення до бази даних MongoDB
-mongoose.connect(config.mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log(err));
-
-// Встановлення шаблонізатора EJS
-app.set('view engine', 'ejs');
-
-// Парсер JSON
-app.use(bodyParser.json());
-
-// Парсер URL-коду
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// Встановлення шляху до статичних файлів
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Встановлення маршрутів
-app.use('/', recipeRoutes);
-app.use('/users', userRoutes);
-app.use('/auth', authRoutes);
-
-// Обробка помилки 404
-app.use((req, res, next) => {
-    res.status(404).send("Page not found");
-});
-
-// Запуск сервера
-app.listen(config.port, () => {
-    console.log(`Server is running on port ${config.port}`);
-});*/
 // app.js
-// Головний файл додатку, який ініціалізує та запускає сервер, налаштовує middleware та маршрути
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -55,47 +8,53 @@ const config = require('./config');
 const recipeRoutes = require('./routes/recipeRoutes');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const crypto = require('crypto');
 
-// Створення екземпляру додатку Express
 const app = express();
 
-// Конфігурація директорії з віґлядами
-app.set('views', path.join(__dirname, 'views')); // Замінено 'your_views_directory' на 'views'
-
-// Підключення до бази даних MongoDB
-mongoose.connect(config.mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
-
-// Встановлення шаблонізатора EJS
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Парсер JSON
-app.use(bodyParser.json());
+mongoose.connect(config.mongoURI)
+ .then(() => console.log('MongoDB connected'))
+ .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1); // Exit the process if MongoDB connection fails
+  });
 
-// Парсер URL-коду
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Встановлення шляху до статичних файлів
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Встановлення маршрутів
+// Generate a secret key for sessions using crypto
+const secretKey = crypto.randomBytes(64).toString('hex');
+
+app.use(session({
+  secret: secretKey,
+  resave: false,
+  saveUninitialized: true,
+}));
+
+// Middleware to set isAuthenticated variable for views
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isAuthenticated || false;
+  next();
+});
+
 app.use('/', recipeRoutes);
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 
-app.use(session({
-  secret: config.jwtSecret, // Використовуйте секретний ключ з config.js
-  resave: false,
-  saveUninitialized: true
-}));
-
-// Обробка помилки 404
-app.use((req, res, next) => {
-  res.status(404).send("Page not found");
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  } else {
+    res.status(404).send('Page not found');
+  }
 });
 
-// Запуск сервера
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
 });
