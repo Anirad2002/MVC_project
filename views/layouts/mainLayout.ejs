@@ -1,39 +1,29 @@
-<!--views/layouts/mainLayout-->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/style.css">
-    <!-- Змінено шлях до favicon.ico -->
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
-
 <body>
-
-    <!-- Навігаційне меню -->
-    <nav class="navbar">
-        <a href="/">Головна</a>
-        <a href="/recipes">Рецепти</a>
-        <a href="/users/profile">Профіль</a>
-        <a href="/auth/login">Зайти</a>
-        <a href="/auth/logout">Вийти</a>
-    </nav>
-
-    <div class="container">
-        <!-- Вміст сторінки буде вставлений сюди -->
-        <%= content %>
-    </div>
-
-    <!-- Футер -->
-    <footer class="footer">
-        &copy; 2024 Рецепти. Усі права захищені.
-    </footer>
-
-    <!-- Скрипти -->
-    <script src="/js/script.js"></script>
+  <nav class="navbar">
+    <a href="/">Головна</a>
+    <% if (isAuthenticated) { %>
+      <a href="/recipes">Рецепти</a>
+      <a href="/recipes/add">Додати рецепт</a>
+      <a href="/users/profile">Профіль</a>
+      <a href="/auth/logout">Вийти</a>
+    <% } else { %>
+      <a href="/auth/login">Увійти</a>
+      <a href="/auth/register">Зареєструватися</a>
+    <% } %>
+  </nav>
+  <div class="container">
+    <!-- Вміст сторінки буде вставлений сюди -->
+    <%= content %>
+  </div>
+  <script src="/js/script.js"></script>
 </body>
-
 </html>
