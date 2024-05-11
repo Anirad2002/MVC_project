@@ -1,0 +1,17 @@
+<!-- views/recipes/allRecipes.ejs -->
+
+<%- include('../layouts/mainLayout', { title: 'Усі Рецепти', content: '' }) %>
+
+<!-- Add a button to add a new recipe -->
+<h1>Рецепти</h1>
+<ul>
+  <% recipes.forEach(recipe => { %>
+    <li>
+      <%= recipe.title %>
+      <!-- Add edit and delete buttons for each recipe -->
+      <a href="/recipes/<%= recipe._id %>/edit">Редагувати</a>
+      <a href="/recipes/<%= recipe._id %>/delete">Видалити</a>
+    </li>
+  <% }); %>
+</ul>
+

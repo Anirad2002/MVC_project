@@ -1,0 +1,14 @@
+<!-- views/recipes/editRecipe.ejs -->
+
+<%- include('../layouts/mainLayout', { title: 'Редагувати Рецепт', content: '' }) %>
+
+<h1>Редагувати рецепт</h1>
+<form action="/recipes/<%= recipe.id %>/edit" method="post">
+  <label for="title">Назва:</label>
+  <input type="text" id="title" name="title" value="<%= recipe.title %>"><br><br>
+  <label for="ingredients">Інгредієнти:</label>
+  <textarea id="ingredients" name="ingredients"><%= recipe.ingredients %></textarea><br><br>
+  <label for="instructions">Інструкції:</label>
+  <textarea id="instructions" name="instructions"><%= recipe.instructions %></textarea><br><br>
+  <input type="submit" value="Зберегти зміни">
+</form>

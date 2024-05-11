@@ -1,0 +1,13 @@
+<!-- views/recipes/singleRecipe.ejs -->
+
+<%- include('../layouts/mainLayout', { title: recipe.name, content: '' }) %>
+
+<h1><%= recipe.title %></h1>
+<p>Created by <%= recipe.createdBy.username %></p>
+<p><%= recipe.ingredients %></p>
+<p><%= recipe.instructions %></p>
+
+<% if (req.user && req.user.id === recipe.createdBy.id) { %>
+  <a href="/recipes/<%= recipe.id %>/edit">Редагувати</a>
+  <a href="/recipes/<%= recipe.id %>/delete">Видалити</a>
+<% } %>

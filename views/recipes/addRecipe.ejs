@@ -1,0 +1,14 @@
+<!-- views/recipes/addRecipe.ejs -->
+
+<%- include('../layouts/mainLayout', { title: 'Додати Рецепт', content: '' }) %>
+
+<h1>Додати рецепт</h1>
+<form action="/recipes/add" method="post">
+  <label for="title">Назва:</label>
+  <input type="text" id="title" name="title"><br><br>
+  <label for="ingredients">Інгредієнти:</label>
+  <textarea id="ingredients" name="ingredients"></textarea><br><br>
+  <label for="instructions">Інструкції:</label>
+  <textarea id="instructions" name="instructions"></textarea><br><br>
+  <input type="submit" value="Додати рецепт">
+</form>
